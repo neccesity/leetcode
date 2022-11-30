@@ -44,21 +44,48 @@
 
 package leetcode.editor.cn;
 
+import java.util.Scanner;
+import java.util.Stack;
+
 /**
  * 有效的括号
  * @author zhangjunhui1999
  */
 public class P20_ValidParentheses{
 	 public static void main(String[] args) {
-	 	 //测试代码
-	 	 Solution solution = new P20_ValidParentheses().new Solution();
+		 //测试代码
+		 Solution solution = new P20_ValidParentheses().new Solution();
+		 Scanner sc = new Scanner(System.in);
+		 while (true) {
+			 String s = sc.next();
+			 System.out.println(solution.isValid(s));
+		 }
 	 }
 	 
 //力扣代码
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
+	public boolean isMatched(char left, char right) {
+		if (left == '(' && right == ')') return true;
+		if (left == '[' && right == ']') return true;
+		if (left == '{' && right == '}') return true;
+		return false;
+	}
     public boolean isValid(String s) {
-
+		Stack<Character> stack = new Stack<>();
+		for (int i = 0; i < s.length(); i++) {
+			if (stack.isEmpty()) {
+				stack.push(s.charAt(i));
+			} else {
+				if (isMatched(stack.peek(), s.charAt(i))) {
+					stack.pop();
+				} else {
+					stack.add(s.charAt(i));
+				}
+			}
+		}
+		if (stack.isEmpty()) return true;
+		return false;
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
