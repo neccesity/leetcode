@@ -1,0 +1,28 @@
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+    	int mark[] = new int[26], pos;
+    	int len = 0, left = 0, ans = 0;
+    	for (int i = 0; i < 26; i++) mark[i] = -1;
+		for (int i = 0; i < s.length(); i++) {
+			pos = s.charAt(i)-'a';
+			if (mark[pos] != -1) {
+				for (int j = left; j < mark[pos]; j++) {
+					mark[s.charAt(j)-'a'] = 0;
+				}
+				left = mark[pos] + 1;
+				len = i - mark[pos];
+				ans = Math.max(len, ans);
+			} else {
+				ans = Math.max(++len, ans);
+			}
+			mark[pos] = i;
+		}
+		return ans;
+    }
+}
+
+//runtime_error:java.lang.ArrayIndexOutOfBoundsException: Index -65 out of bounds for length 26
+  at line 8, Solution.lengthOfLongestSubstring
+  at line 54, __DriverSolution__.__helper__
+  at line 84, __Driver__.main
+//last_testcase:" "

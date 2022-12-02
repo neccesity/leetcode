@@ -1,0 +1,90 @@
+> Problem: [14. 最长公共前缀](https://leetcode.cn/problems/longest-common-prefix/description/)
+
+[TOC]
+
+# 思路
+
+> 先假设数组第一个就是公共前缀，但不是最长的。接下来只需要一一去对比并利用字符串截取就行。
+
+# 解题方法
+
+> 最主要的是 两个for 循环的 遍历对象和先后位置。这里以 数组长度为先决条件
+
+# 复杂度
+
+- 时间复杂度:
+- 假设数组长度为n，最长的公共前缀直到数组末尾才判断完毕，且刚好为 m 长度。
+
+> $O(nm)$
+
+# Code
+
+* []
+
+```JavaScript
+
+/**
+ * @param {string[]} strs
+ * @return {string}
+ */
+var longestCommonPrefix = function(strs) {
+    let len = strs.length
+    if(len==0){
+        return ""
+    }
+    if(len==1){
+        return strs[0]
+    }
+    //假设第一个数为公共前缀
+    let prefix = strs[0]
+    //从索引1开始
+    for(let i=1; i<len; i++){
+        let next = strs[i]
+        let j=0;
+        //从头开始对每个字符串进行扫描，知道遇见不相等的则截取掉
+        //注意这里是因为 前缀 才进行slice，如果是 求最长公共部分则不一样
+        for( ;j<next.length;j++){
+            if(next[j]!=prefix[j]){
+                prefix = prefix.slice(0,j);
+                break
+            }
+        }
+        //这里主要考虑 next 比 prefix 的长度还长，例如: ['ab','a']
+        if(strs.includes(prefix)){
+            prefix = prefix.slice(0,j)
+        }
+
+    }
+    return prefix
+};
+```
+
+最好的运算结果大家看看
+![运算结果](https://pic.leetcode.cn/1669081446-XsdmGN-%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_16690806693008.png)
+
+第二种是 官方的 纵向扫描法
+
+* 
+
+```
+/**
+ * @param {string[]} strs
+ * @return {string}
+ */
+var longestCommonPrefix = function(strs) {
+    let len = strs.length
+    if(len==0){
+        return ""
+    }
+    let prefix = strs[0]
+    for(let i=0; i<prefix.length; i++){
+        for(let j=1 ;j<len;j++){
+            if(strs[j][i] != prefix[i] || i == strs[j].length){
+                return prefix.slice(0,i) 
+            }
+        }
+    }
+    return prefix
+};
+```
+

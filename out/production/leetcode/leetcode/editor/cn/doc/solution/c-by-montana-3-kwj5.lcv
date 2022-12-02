@@ -1,0 +1,154 @@
+**横向扫描**
+由于最长公共前缀一定小于或者等于所有字符串中最短的一个。因此，可以以第一个字符串作为基准，不断的向后扫描剩余的字符串，扫描的过程中不断更新最长公共前缀。
+
+* 
+
+```
+/*
+    @Author: Montana
+    @Method: Horizontal Scan
+    @Date: 2022.7.24
+*/
+
+char * longestCommonPrefix(char ** strs, int strsSize){
+    /*  
+        Prefix's max length must equal or less than first string
+     */
+    char* prefix = strs[0];
+    char maxlen = strlen(prefix);
+
+    /*
+        i is used as a pointer to compare current prefix
+        with the next string, and update max length
+    */
+    int i;
+
+    for(int j = 1;j < strsSize;++j){
+        /*  
+            Compare the next string with current max prefix.  
+            We have to judge which one is smaller because
+            the length of the longest common prefix only 
+            gets shorter
+        */
+        int curLen = strlen(strs[j]);
+        curLen = maxlen < curLen ? maxlen : curLen;
+
+        i = 0;      //  Reset pointer
+
+        while(i < curLen && strs[j][i] == prefix[i]){
+            i++;
+        }
+
+        maxlen = i;     //  Update Max length
+        
+    }
+
+    /*  Handle max prefix    */
+    prefix[maxlen] = '\0';
+
+    return prefix;
+
+}
+```
+
+**纵向扫描**
+这里要注意的是：
+在横向扫描时，当用来比较的字符与被比较的字符不同时，并不能断定当前扫描到的就是最长的公共前缀，因为后续扫描时可能会使当前的公共前缀变的更短。
+但在纵向扫描时，只要有任意一行的字符不相同，则说明当前的公共前缀就是最长的公共前缀，因此直接返回即可。
+
+* 
+
+```
+/*
+    @Author: Montana
+    @Method: Vertical Scan
+    @Date: 2022.7.24
+*/
+
+char * longestCommonPrefix(char ** strs, int strsSize){
+    if(strsSize == 0)
+        return "";
+
+    /*
+        flag is used to mark whether the longest prefix is found
+    */
+    int flag = 0;
+    int maxlen = strlen(strs[0]);
+
+    for(int col = 0;col < maxlen;++col){
+        /*
+            Use the char in the first string to compare
+        */
+        char ch = strs[0][col];
+        for(int row = 1;row < strsSize;++row){
+            /*
+                End the loop if one char is not equal
+            */
+            if(ch != strs[row][col]){
+                strs[0][col] = '\0';
+                flag = 1;
+                break;
+            }
+        }
+
+        if(flag == 1)
+            break;
+    }
+
+    return strs[0];
+}
+```
+
+**分治算法**
+思路解析可以看官方题解，这里不再赘述
+
+* 
+
+```
+/*
+    @Author: Montana
+    @Method: Divide and Conquer
+    @Date: 2022.7.24
+*/
+
+char* CP(char* lcpL, char* lcpR){
+
+    int minLen = strlen(lcpL) < strlen(lcpR) ? strlen(lcpL) : strlen(lcpR);
+    for(int i = 0;i < minLen;i++){
+        /*
+            If different char is found, update the shortest length
+        */
+        if(lcpL[i] != lcpR[i]){
+            minLen = i;
+            break;
+        }
+    }
+
+    lcpL[minLen] = '\0';
+    return lcpL;
+}
+
+char* LCP(char** strs, int start, int end){
+    if(start == end){
+        return strs[start];
+    }else{
+        /*  Prevent Overflow    */
+        int mid = (end - start) / 2 + start;
+
+        /*  Divide  */
+        char* lcpL = LCP(strs, start, mid);
+        char* lcpR = LCP(strs, mid + 1, end);
+
+        return CP(lcpL, lcpR);
+    }
+}
+
+char * longestCommonPrefix(char ** strs, int strsSize){
+    if(strs == NULL || strsSize == 0){
+        return "";
+    }else{
+        return LCP(strs, 0, strsSize - 1);
+    }
+}
+```
+

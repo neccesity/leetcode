@@ -1,0 +1,28 @@
+### 解题思路
+
+以第一个字符串为基本，遍历后边左右字符串，如果相等，加到a里；
+本来是想用最短的字符串长度为基本，但运行时间长了；
+
+### 代码
+
+* cpp
+
+```cpp
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        string a;
+         int i,j;
+        for( i=0;i<strs[0].size();i++){
+            int t=0;//记录比较次数；如果次数与strs的长度相等，就是公共前缀
+            for(j=0;j<strs.size();j++){
+                if(strs[0][i]==strs[j][i]) t++;
+            }
+            if(t==strs.size()) a += strs[0][i];
+            if(t!=strs.size()) break;
+        }
+        return a;
+    }
+};
+```
+

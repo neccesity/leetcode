@@ -31,6 +31,11 @@
 
 package leetcode.editor.cn;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
+
 /**
  * 删除排序链表中的重复元素
  * @author zhangjunhui1999
@@ -54,10 +59,42 @@ public class P83_RemoveDuplicatesFromSortedList{
  * }
  */
 class Solution {
-    public ListNode deleteDuplicates(ListNode head) {
-
-    }
+	public ListNode deleteDuplicates(ListNode head) {
+		if (head == null) return head;
+		ListNode currentNode = head;
+		while (currentNode != null && currentNode.next != null) {
+			if (currentNode.val == currentNode.next.val) {
+				currentNode.next = currentNode.next.next;
+			} else {
+				currentNode = currentNode.next;
+			}
+		}
+		return head;
+	}
 }
+/*class Solution2 {
+    public ListNode deleteDuplicates(ListNode head) {
+		Set<Integer> set = new TreeSet<Integer>();
+    	if (head == null) return head;
+		while (head != null) {
+			set.add(head.val);
+			head = head.next;
+		}
+		int nums[] = new int[303],cnt = 0;
+    	//ListNode newNode = new ListNode(iterator);
+    	for (Integer num : set) {
+			nums[cnt++] = num;
+		}
+    	ListNode headNode = new ListNode();
+		ListNode currentNode = new ListNode(nums[0]);
+    	headNode = currentNode;
+		for (int i = 1; i < cnt; i++) {
+    		currentNode.next = new ListNode(nums[i]);
+			currentNode = currentNode.next;
+    	}
+    	return headNode;
+    }
+}*/
 //leetcode submit region end(Prohibit modification and deletion)
 
 }

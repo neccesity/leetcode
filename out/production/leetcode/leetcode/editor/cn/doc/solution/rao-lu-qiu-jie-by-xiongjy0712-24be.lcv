@@ -1,0 +1,49 @@
+__思路：__
+1.由字符串数组String[] strs得到字符串长度数组int[] wordLens，设计函数minInArray(int[] array)，来取数组wordLens中最小的整数作为可能达到的最长前缀长度minWordLen；
+
+2.将minWordLen作为遍历的次数，以及作为截取各个字符串的长度（可能的前缀），比较这些截取后的字符串们，如果全部相等，则说明当前截取的字符串就是最长公共前缀；
+
+3.如何证明数组里的字符串们都相等呢？这里我们可以设计一个函数equalArray(String[] strs)，该函数中，将截取操作完成后的数组strs转成set以去重，如果set大小（长度）为1，即得证；
+
+4.如果遍历过程中，有过字符串们全部相等，则返回任一字符串；如果没有，返回空字符串“”。
+
+* 
+
+```
+class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        int[] wordLens = new int[strs.length];
+        for (int i = 0; i < wordLens.length; i++) {
+            wordLens[i] = strs[i].length();
+        }
+        int minWordLen = minInArray(wordLens);
+        boolean flag = false;
+        for (int i = minWordLen - 1; i >= 0; i--) {
+            for (int j = 0; j < strs.length; j++) {
+                strs[j]=strs[j].substring(0,i+1);
+            }
+            if (equalArray(strs)){
+                flag=true;
+                break;
+            }
+        }
+        return flag?strs[0]:"";
+    }
+    //找出整数数组内最小值
+    public int minInArray(int[] array) {
+        int min = array[0];
+        for (int i = 1; i < array.length; i++) {
+            if (array[i] < min) {
+                min = array[i];
+            }
+        }
+        return min;
+    }
+    //判断字符串数组内元素是否全部相等
+    public boolean equalArray(String[] strs){
+        Set<String> set = Arrays.stream(strs).collect(Collectors.toSet());
+        return set.size() == 1;
+    }
+}
+```
+

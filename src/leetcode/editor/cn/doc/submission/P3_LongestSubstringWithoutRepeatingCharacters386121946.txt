@@ -1,0 +1,29 @@
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+    	if (s.length() == 0) return 0;
+    	int mark[] = new int[26], pos;
+    	int len = 0, left = 0, ans = 0;
+		Map<Character, Integer> map = new HashMap<Character, Integer>();
+		for (int i = 0; i < s.length(); i++) {
+			if (map.containsKey(s.charAt(i))) {
+				for (int j = left; j < map.get(s.charAt(i)); j++) {
+					mark[s.charAt(j)-'a'] = -1;
+				}
+				left = map.get(s.charAt(i)) + 1;
+				len = i - map.get(s.charAt(i));
+				ans = Math.max(len, ans);
+			} else {
+				ans = Math.max(++len, ans);
+				map.put(s.charAt(i), i);
+			}
+			map.replace(s.charAt(i), i);
+		}
+		return ans;
+    }
+}
+
+//total_testcases:987
+//total_correct:79
+//input_formatted:"abba"
+//expected_output:2
+//code_output:3
