@@ -1,0 +1,37 @@
+### 执行结果
+
+- 执行用时：4 ms, 在所有 C++ 提交中击败了91.82%的用户
+- 内存消耗：8.9 MB, 在所有 C++ 提交中击败了5.03%的用户
+- 通过测试用例：15 / 15
+
+### 代码
+
+* cpp
+
+```cpp
+class Solution {
+public:
+    vector<int> nextGreaterElement(const vector<int>& nums1,const vector<int>& nums2) {
+        vector<int> a;//空容器
+        a.reserve(nums1.size());//预留长度，避免每一次push_back()不必要的重分配
+        stack<int> s;//空栈
+        unordered_map<int,int> m;//哈希映射
+        for(const int &i:nums2){//const int &防止深拷贝，foreach循环
+            while(s.size() && s.top()<i){//栈不为空，且栈首小于当前数
+                m[s.top()]=i;//记录右边第一个大于数
+                s.pop();//找到就出栈，遍历栈下面值
+            }
+            s.push(i);//当前数入栈
+        }
+        for(const int &i:nums1){//const int &防止深拷贝，foreach循环
+            try{
+                a.push_back(m.at(i));//通过at函数找到key，读取value
+            }catch(const out_of_range &){//找不到key，抛出异常错误
+                a.push_back(-1);//异常处理为-1
+            }
+        }
+        return a;
+    }
+};
+```
+
