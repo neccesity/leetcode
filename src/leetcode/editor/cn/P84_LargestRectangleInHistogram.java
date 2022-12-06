@@ -35,6 +35,8 @@
 
 package leetcode.editor.cn;
 
+import java.util.Stack;
+
 /**
  * 柱状图中最大的矩形
  * @author zhangjunhui1999
@@ -49,7 +51,31 @@ public class P84_LargestRectangleInHistogram{
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
     public int largestRectangleArea(int[] heights) {
-
+		Stack<Integer> stack = new Stack<>();
+		int l[] = new int[100005];
+		int r[] = new int[100005];
+		for (int i = 0; i < heights.length; i++) {
+			l[i] = -1;
+			r[i] = heights.length;
+		}
+		for (int i = 0; i < heights.length; i++) {
+			while (!stack.isEmpty() && heights[i] < heights[stack.peek()]) {
+				r[stack.pop()] = i;
+			}
+			stack.push(i);
+		}
+		stack.clear();
+		for (int i = heights.length-1; i >= 0; i--) {
+			while (!stack.isEmpty() && heights[i] < heights[stack.peek()]) {
+				l[stack.pop()] = i;
+			}
+			stack.push(i);
+		}
+		int ans = 0;
+		for (int i = 0; i < heights.length; i++) {
+			ans = Math.max(ans, heights[i] * (r[i]-l[i]-1));
+		}
+		return ans;
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
