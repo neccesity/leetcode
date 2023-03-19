@@ -1,0 +1,63 @@
+### 解题思路
+
+利用哈希表记录头字符的数量，看看字符数量是否与vector容器元素数量相同，如果相同则将该字符保存下来。
+注意遍历的长度，不超过最短字符串长度，因为不存在重复字符串比最短字符串长。
+
+### 代码
+
+* cpp
+
+```cpp
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) 
+    {
+        string result;
+
+        //z的ascll码为122
+        int hashu[123] = {0};
+
+        //因为最大长度不超过200，所以这里定义成201
+        int min = 201;
+
+        int i = 0;
+
+        //遍历找出最短字符串，防止后续遍历越界(因为重复出现的字符串长度不可能超过最短字符串长度)
+        for (i = 0; i < strs.size(); i++)
+        {
+            if (min > strs[i].size())
+            {
+                min = strs[i].size();
+            }
+        }
+
+        //判断每个字符串的第j个字符是否都相等，当然，j从0开始
+        for (int j = 0; j < min; j++)
+        {
+
+            for (i = 0; i < strs.size(); i++)
+            {
+                //利用哈希表对字符数量进行记录
+                hashu[(strs[i])[j]] += 1;
+            }
+            i--;
+
+            //如果确定该字符在每个字符串的第j个位置都有，就保留下来
+            if (hashu[(strs[i])[j]] == strs.size())
+            {
+                result += (strs[i])[j];
+
+                //这里置为0是防止第j个位置和第 j + 1 个位置的字符相同造成错过
+                hashu[(strs[i])[j]] = 0;
+            }
+
+            else
+            {
+                return result;
+            }
+        }
+        return result;
+    }
+};
+```
+

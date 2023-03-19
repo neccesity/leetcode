@@ -1,0 +1,38 @@
+* []
+
+```Java
+
+class Solution {
+    public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+
+        int n1 = nums1.length;
+        int n2 = nums2.length;
+        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+        Stack<Integer> stack = new Stack<>();
+
+        //等价于在nums2中依次找每个数的右侧的第一个比自己大的数
+        for (int i=0;i<n2;i++) {
+            int num = nums2[i];
+            while(!stack.isEmpty() && num > stack.peek()){
+                map.put(stack.peek(),num);
+                stack.pop();
+            }
+            stack.push(num);
+        }
+
+        //处理右侧没有比自己大的数的情况
+        while(!stack.isEmpty()){
+            map.put(stack.peek(),-1);
+            stack.pop();
+        }
+
+        int[] res = new int[n1];
+        for (int i = 0; i < n1; ++i) {
+            res[i] = map.get(nums1[i]);
+        }
+        return res;
+        
+    }
+}
+```
+

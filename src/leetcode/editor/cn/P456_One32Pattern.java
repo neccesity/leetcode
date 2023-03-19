@@ -40,6 +40,7 @@
 
 package leetcode.editor.cn;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 /**
@@ -94,6 +95,7 @@ class Solution {
     		if (left!=0 && right!=0 && left<right) return true;
 		}
     	return false;
+		ArrayList<Integer> arrayList = new ArrayList<Integer>();
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)

@@ -1,0 +1,41 @@
+### 解题思路
+
+1.空数组直接返回""
+2.初始化结果字符串为strs中最短字符串，节省内存
+3.遍历strs，每位与结果字符串取等缩减结果集
+
+### 代码
+
+* java
+
+```java
+class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        //空数组直接返回""
+        if(strs.length == 0){
+            return "";
+        }
+
+        //初始化结果字符串为strs中最短字符串
+        int index = 0;
+        int length = Integer.MAX_VALUE;
+        for (int i = 0; i < strs.length; i++) {
+            if (strs[i].length() < length){
+                length = strs[i].length();
+                index = i;
+            }
+        }
+        String result = strs[index];
+
+        //遍历strs，每位与结果字符串取等缩减结果集
+        for (String str : strs){
+            while (!str.startsWith(result)){
+                result = result.substring(0, result.length() - 1);
+            }
+        }
+
+        return result;
+    }
+}
+```
+
