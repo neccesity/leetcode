@@ -34,6 +34,9 @@
 
 package leetcode.editor.cn;
 
+import javax.swing.tree.TreeNode;
+import java.util.*;
+
 /**
  * Binary Tree Level Order Traversal II
  * @author zhangjunhui1999
@@ -62,9 +65,35 @@ public class P107_BinaryTreeLevelOrderTraversalIi{
  * }
  */
 class Solution {
-    public List<List<Integer>> levelOrderBottom(TreeNode root) {
-
-    }
+	public List<List<Integer>> levelOrderBottom(TreeNode root) {
+		if (root == null) return new ArrayList<>();
+		TreeNode currentNode = null;
+		List<List<Integer>> arrayList = new ArrayList<>();
+		List<Integer> subArraylist = new ArrayList<>();
+		Queue<TreeNode> queue = new LinkedList<>();
+		queue.offer(root);
+		subArraylist.add(root.val);
+		arrayList.add(subArraylist);
+		int number;
+		while (!queue.isEmpty()) {
+			number = queue.size();
+			subArraylist = new ArrayList<>();
+			for (int i = 0; i < number; i++) {
+				currentNode = queue.poll();
+				if (currentNode.left!=null) {
+					subArraylist.add(currentNode.left.val);
+					queue.offer(currentNode.left);
+				}
+				if (currentNode.right!=null) {
+					subArraylist.add(currentNode.right.val);
+					queue.offer(currentNode.right);
+				}
+			}
+			if (subArraylist.size()!=0) arrayList.add(subArraylist);
+		}
+		Collections.reverse(arrayList);
+		return arrayList;
+	}
 }
 //leetcode submit region end(Prohibit modification and deletion)
 
