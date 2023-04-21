@@ -1,0 +1,67 @@
+#### 95. 不同的二叉搜索树 II
+
+给你一个整数 `n` ，请你生成并返回所有由 `n` 个节点组成且节点值从 `1` 到 `n` 互不相同的不同 **二叉搜索树** 。可以按 **任意顺序** 返回答案。
+
+* 
+
+```
+输入：n = 3
+输出：[[1,null,2,null,3],[1,null,3,2],[2,1,3],[3,1,null,null,2],[3,2,null,1]]
+```
+
+* 
+
+```
+输入：n = 1
+输出：[[1]]
+```
+
+- `1 <= n <= 8`
+
+***问题分析***
+
+此题与[不同的二叉搜索树](https://leetcode.cn/problems/unique-binary-search-trees/)类似，主要思想就是依次将每个结点作为根节点。由于要生成搜索树，故采用递归较为简便，递归过程中会遇到许多重复子问题，因此可增加记忆化。
+
+***代码实现***
+
+* c++
+
+```c++
+class Solution {
+public:
+    vector<vector<vector<TreeNode *>>> dp;
+    /**
+     * 递归生成搜索树
+     * 用l..r生成搜索树
+     */
+    vector<TreeNode *> gen(int l, int r) {
+        vector<TreeNode *> ans;
+        // 依次将l,l+1,..,r作为根节点生成搜索树
+        if (l > r)return {nullptr};
+
+        if (!dp[l][r].empty())return dp[l][r];
+
+        for (int rt = l; rt <= r; rt++) {
+            if (dp[l][rt - 1].empty())dp[l][rt - 1] = gen(l, rt - 1);
+            for (auto lc: dp[l][rt - 1]) {
+                // 此处rt+1可能取到n+1，所以dp一维二维大小为n+2
+                if (dp[rt + 1][r].empty())dp[rt + 1][r] = gen(rt + 1, r);
+                for (auto rc: dp[rt + 1][r]) {
+                    // 生成的左子树与右子树组合，加上根节点，得到一棵搜索树
+                    ans.push_back(new TreeNode(rt, lc, rc));
+                }
+            }
+        }
+        return ans;
+    }
+
+    vector<TreeNode *> generateTrees(int n) {
+        // 当n=0时应返回{}，而不是{null}
+        if (n == 0)return {};
+        // 注意：是n+2而不是n+1，因为gen()中的rt+1可能取到n+1
+        dp = vector<vector<vector<TreeNode *>>>(n + 2, vector<vector<TreeNode *>>(n + 2));
+        return gen(1, n);
+    }
+};
+```
+

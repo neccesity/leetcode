@@ -1,0 +1,37 @@
+class Solution {
+    public int longestIncreasingPath(int[][] matrix) {
+		int m=matrix.length,n=matrix[0].length,ans=1;
+		int cnt = 0;
+		int vis[][] = new int[matrix.length][matrix.length];
+		int v[][] = new int[matrix.length][matrix.length];
+		for(int i=0;i<m;i++) {
+			for(int j=0;j<n;j++) {
+				ans = Math.max(ans,dfs(i,j,v,m,n,matrix,1,vis));
+			}
+		}
+		return ans;
+    }
+    public boolean isValid(int x,int y,int m,int n,int matrix[][],int p,int q,int vis[][]) {
+    	if(x>=0&&x<m&&y>=0&&y<n&&vis[x][y]==0&&matrix[x][y]>matrix[p][q]) return true;
+    	return false;
+	}
+    public int dfs(int x,int y,int v[][],int m,int n,int matrix[][],int cnt,int vis[][]) {
+    	if(v[x][y]!=0) return v[x][y];
+    	vis[x][y]=1;
+		if(isValid(x,y+1,m,n,matrix,x,y,vis)) v[x][y]=Math.max(v[x][y],cnt+dfs(x,y+1,v,m,n,matrix,cnt,vis));
+		if(isValid(x,y-1,m,n,matrix,x,y,vis)) v[x][y]=Math.max(v[x][y],cnt+dfs(x,y-1,v,m,n,matrix,cnt,vis));
+		if(isValid(x-1,y,m,n,matrix,x,y,vis)) v[x][y]=Math.max(v[x][y],cnt+dfs(x-1,y,v,m,n,matrix,cnt,vis));
+		if(isValid(x+1,y,m,n,matrix,x,y,vis)) v[x][y]=Math.max(v[x][y],cnt+dfs(x+1,y,v,m,n,matrix,cnt,vis));
+		vis[x][y]=0;
+		v[x][y]=Math.max(v[x][y],cnt);
+		return v[x][y];
+    }
+}
+
+//runtime_error:java.lang.ArrayIndexOutOfBoundsException: Index 1 out of bounds for length 1
+  at line 15, Solution.isValid
+  at line 21, Solution.dfs
+  at line 9, Solution.longestIncreasingPath
+  at line 54, __DriverSolution__.__helper__
+  at line 84, __Driver__.main
+//last_testcase:[[1,2]]

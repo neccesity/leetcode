@@ -1,0 +1,68 @@
+### 思路
+
+前序序列 = {根节点, 左子树前序序列, 右子树前序序列}
+
+中序序列 = {左子树中序序列, 根节点, 右子树中序序列}&#x20;
+
+且各序列长度相同
+
+1. 先根据前序序列得到当前根节点的值( preorder\[0] )
+
+2. 申请当前树节点, 并初始化
+
+3. 如果序列长度为1, 说明这颗树只有根节点，直接返回这个节点
+
+4. 查找中序序列里当前节点值(没有重复元素)，找得到两子树的序列长度
+
+5. 将左子树前序序列, 右子树前序序列，左子树中序序列, 右子树中序序列创建出来
+
+6. 以左子树，右子树分类，进行递归, 构造左右子树( 回到步骤1 ), 将返回结果(子树根节点)赋值给左右指针
+
+7. 返回这个节点
+
+### 代码
+
+* cpp
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        if(!preorder.size()) return NULL;//如果是一颗空树，直接返回空
+
+        TreeNode * root = new TreeNode;//申请节点并初始化
+        root->val = preorder[0];
+        root->left = root->right = NULL;
+
+        if(preorder.size() == 1) return root;//如果这课树只有根节点,直接返回这个节点
+
+        vector<int>::iterator it = find(inorder.begin(), inorder.end(), preorder[0]);
+        //查找当前节点在中序序列中的位置
+
+        //创建左子树前序序列, 右子树前序序列，左子树中序序列, 右子树中序序列
+        vector<int>pl(preorder.begin() + 1, preorder.begin() + 1 + (it - inorder.begin()));
+        vector<int>pr(preorder.begin() + 1 + (it - inorder.begin()), preorder.end());
+        vector<int>il(inorder.begin(), it);
+        vector<int>ir(it + 1, inorder.end());
+
+        //创建左右子树, 并将它们的根节点赋值给当前节点的指针
+        root->left = buildTree(pl, il);
+        root->right = buildTree(pr, ir);
+
+        //返回当前节点
+        return root;
+    }
+};
+```
+

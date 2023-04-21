@@ -1,0 +1,240 @@
+![数组13 最大子序和.mp4](https://leetcode.cn/problems/maximum-subarray/solution/si-wei-dao-tu-zheng-li-3chong-fang-fa-ch-zxih/b9276ee8-4b2a-4fff-b337-2caf559c9ddb)
+
+> 此专栏文章是对力扣上算法题目**各种方法**的**总结和归纳**, 整理出最重要的思路和知识重点并以**思维导图**形式呈现, 当然也会加上我对**导图的详解**.
+>
+> **目的是**为了更方便快捷的**记忆和回忆算法重点**\(不用每次都重复看题解\), 毕竟算法不是做了一遍就能完全记住的. 所以本文适合已经知道解题思路和方法, 想进一步**加强理解和记忆**的朋友, 并不适合第一次接触此题的朋友\(可以根据题号先去力扣看看官方题解, 然后再看本文内容\).
+>
+> 关于[本专栏**所有题目**的目录链接](https://leetcode-cn.com/problems/two-sum/solution/suo-you-ti-jie-de-mu-lu-lian-jie-si-wei-ecnoo/), 刷算法题目的顺序/注意点/技巧, 以及**思维导图源文件**问题请点击上方 [我的主页](https://leetcode-cn.com/u/gu-xx-qi/).
+>
+> 想进大厂, 刷算法是必不可少的, 欢迎和博主一起打卡刷力扣算法, 博主同步更新了算法视频讲解 和 其他文章/导图讲解, 更易于理解, 欢迎来看!
+>
+> **关注博主获得题解更新的最新消息!!!**
+
+## 相似题目
+
+[数组13: 3种方法彻底解决最大子序和问题, 了解线段树的思想, 力扣53](https://leetcode-cn.com/problems/maximum-subarray/solution/si-wei-dao-tu-zheng-li-3chong-fang-fa-ch-zxih/)
+
+[数组14: 最大子序积 和 最大子序和 的不同之处, 力扣152](https://leetcode-cn.com/problems/maximum-product-subarray/solution/si-wei-dao-tu-zheng-li-zui-da-zi-xu-ji-h-r8du/)
+
+[数组15: 介绍Entry类和海象运算符, 哈希表解决最短连续子数组, 力扣697](https://leetcode-cn.com/problems/degree-of-an-array/solution/si-wei-dao-tu-zheng-li-jie-shao-entrylei-fkxe/)
+
+[数组16: 最长湍流子数组的动态规划构建 和 滑动窗口解法, 力扣978](https://leetcode-cn.com/problems/longest-turbulent-subarray/solution/si-wei-dao-tu-zheng-li-dong-tai-gui-hua-bswtn/)
+
+## 0.导图整理
+
+![](https://pic.leetcode-cn.com/1632391515-beJwEz-file_1632391515178)
+
+## 1.动态规划的空间优化
+
+这题是典型的动态规划题目, 最困难的点在于 **dp数组的定义及下标含义**: **用ai代表nums[i], 用f(i)代表以第i个数结尾的「连续子数组的最大和」**, 网上也有很多文章介绍了是如何一步步分析来获得定义的过程的, 但我感觉对于新手来说, 可能还是多见一些类似的题目, 获得大量的经验, 这样比较有效果吧, 毕竟想研究动态规划的理论基础还是挺有难度的.
+
+动态规划最重要的思想就是**利用上一个状态**, 对于本题而言就是: **到底要不要加上上一个状态f(i-1)的信息**, 这完全取决于f(i-1)的**正负情况**, 这样我们就能得出了动态规划的递推公式: f(i)=max{f(i−1)+ai,ai}
+
+得到了递推公式后就可以编写代码了, 代码中的一个技巧就是对于**空间复杂度的优化**. 当使用动态规划**只需要一个数**(并不需要整个dp数组)时, 我们就没必要将整个dp数组都保存下来, 我们只需**用变量来记录下我们需要的某个量**即可, 这个优化方法在动态规划中还是非常常用的方法, 具体的实现参考代码.
+
+## 2.贪心法的思想
+
+本题还可以利用贪心法来实现, **贪心的思想**是: 从左向右迭代, 一个个数字加过去如果sum<0, 那说明加上它只会变得越来越小, 所以我们将sum置零后重新开始找子序串.
+
+在迭代的过程中要注意, 我们需要**用result来不断维持当前的最大子序和**, 因为sum的值是在不断更新的, 所以我们要及时记录下它的最大值.
+
+有一个注意点是: 有的朋友可能觉得当**数组全是负数**的时候可能会出现问题, 其实是没有问题的. 因为在sum不断遍历的过程中, 早已将最大值不断传给result, 即使sum一直是负数被不断置零也不用担心, result还是会记录下最大的那个负数.
+
+## 3.分治法: 线段树
+
+### 3.1 分治法的意义
+
+首先说明一点, 对于这道题而言, **分治法是不如上面的两种算法的**, 在时间复杂度相同的情况下, 分治法还具有更高的空间复杂度. 分治法的意义如下图所示, 这里讲解它, 主要是为了让大家先了解一下 **线段树** 这种数据结构, 它还是有很广泛的应用场景的, 毕竟我们刷算法也是学习的过程, 早晚也都会接触到它的.
+![](https://pic.leetcode-cn.com/1632391515-PKLTwc-file_1632391515160)
+
+### 3.2 分治法的思想
+
+大家直接看官方题解的思想可能会一头雾水, 根本不知道这些要维护的变量是怎么来的, 我找到了另外一篇文章详细介绍了整个思想的流程, **说明了变量是如何一步一步获得的**, 讲解的还是挺清楚的, 如果还是感觉不太懂, 可以看看我录制的配套视频, 根据图片更详细的说明了整个推导过程.
+![](https://pic.leetcode-cn.com/1632391515-DclOUV-file_1632391515169)
+
+理解了推导过程后, 再来看官方的题解就比较清晰了, 也能明白每个变量的由来了. 下面是我整理的官方题解的思路:
+![](https://pic.leetcode-cn.com/1632391515-hVmWLl-file_1632391515164)
+
+### 3.3 java改Python易错点
+
+在理解算法思想后, 算法还是比较容易理解的, 但是官方只提供了java的版本, 我在自己转化为Python语言的时候, 还是遇到了不少问题的, 因为它涉及到了**类的各种相关操作**, 差别还是很大的, 如果不使用Python语言的话, 这部分就可以跳过了.
+
+1. 定义类时用class, 第一参数是self(没参数也可以), 定义方法用def, 第一个参数必须是self.
+
+2. 定义类的实例属性, 比如lSum, **定义时必须进行赋值**, 比如lSum = 0, 不进行赋值是会报错的.
+
+3. **调用方法的时候, 第一个参数必须是self**, 这个和java是完全不同的, 不加这个参数就会提醒你少了个参数. 调用类的时候,若定义类时没有参数,不用加self.
+
+4. 若你看到**出现某某方法还未定义的错误**, 那说明你定义的几个方法**不是平级的关系**, 在java中似乎是没有区别的, 但是在Python中, 你必须要将被用到的方法放入此方法里面, 也就是**缩进一级**, 具体操作看两者代码的不同.
+
+这些就是我在改代码时遇到的比较严重的错误, 可以先了解一下, 说不定以后你也会遇到呢!
+
+## 4.进阶: 返回子数组
+
+在动态规划的基础上, 新增一个**map标记当前位置最大和的开始节点信息**, map时间复杂度为1, **找到最大和时, 记录下当前结点的下标, 也就是结束的位置.**
+
+在贪心法的基础上, **从头标记为开始位置**, 结束位置随着遍历数组不断向后, **当sum<0时, 重新标记当前位置为开始和结束的位置,** 此后结束位置还是不断向后推进.
+
+## 源码
+
+### Python:
+
+* python
+
+```python
+# 动态规划
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        pre = 0
+        maxAns = nums[0]
+        for x in nums:
+            # pre来维护对于当前f(i)的f(i−1)的值是多少
+            pre = max(x , pre + x ) # 判断f(i-1)是否要加到当前数上
+            maxAns = max(maxAns, pre)   # 获取最大值
+        return maxAns
+
+# 贪心法
+class Solution:
+    def maxSubAray(self, nums: List[int]) -> int:
+        # 类似寻找最大最小值的题目,初始值一定要定义成理论上的最小最大值
+        result = float("-inf")
+        numsSize = len(nums)
+        sum = 0
+        for i in range(numsSize):
+            sum += nums[i]
+            result = max(result, sum)
+            # 如果sum < 0,重新开始找子序串
+            if (sum < 0):
+                sum = 0
+
+
+        return result
+
+# 分治法: 线段树
+class Solution :
+    def maxSubAray(self, nums: List[int]) -> int:
+        class wtevTree : # 线段树
+            lSum = 0 # 以左区间为端点的最大子段和
+            rSum = 0 # 以右区间为端点的最大子段和
+            iSum = 0 # 区间所有数的和
+            mSum = 0 # 该区间的最大子段和
+            def __init__(self,l, r, i, m) : # 构造函数
+                self.lSum = l
+                self.rSum = r
+                self.iSum = i
+                self.mSum = m        
+
+
+        # 通过既有的属性,计算上一层的属性,一步步往上返回,获得线段树
+        def pushUp(self, leftT: wtevTree, rightT: wtevTree) -> wtevTree:
+            # 新子段的lSum等于左区间的lSum或者左区间的 区间和 加上右区间的lSum
+            l = max(leftT.lSum, leftT.iSum + rightT.lSum)
+            # 新子段的rSum等于右区间的rSum或者右区间的 区间和 加上左区间的rSum
+            r = max(leftT.rSum + rightT.iSum, rightT.rSum)
+            # 新子段的区间和等于左右区间的区间和之和
+            i = leftT.iSum + rightT.iSum
+            # 新子段的最大子段和,其子段有可能穿过左右区间,或左区间,或右区间
+            m = max(leftT.rSum + rightT.lSum, max(leftT.mSum, rightT.mSum))
+            return wtevTree(l, r, i, m)
+        
+        # 递归建立和获得输入区间所有子段的结构
+        def getInfo(self, nums: List[int], left: int, right: int) -> wtevTree:
+            if (left == right): # 若区间长度为1,其四个子段均为其值
+                return wtevTree(nums[left], nums[left], nums[left], nums[left])
+            mid = (left + right) >> 1 # 获得中间点mid,右移一位相当于除以2,运算更快
+            leftT = getInfo(self, nums, left, mid)
+            rightT = getInfo(self, nums, mid + 1, right) # mid+1,左右区间没有交集。
+            return pushUp(self, leftT, rightT) # 递归结束后,做最后一次合并
+    
+        if ( not nums or len(nums) <= 0): # 输入校验
+            return 0
+        lens = len(nums) # 获取输入长度
+        return getInfo(self, nums, 0, lens - 1).mSum
+```
+
+### java:
+
+* java
+
+```java
+// 动态规划
+class Solution {
+    public int maxSubAray(int[] nums) {
+        int pre = 0, maxAns = nums[0];
+        for (int x : nums) {
+            //pre来维护对于当前f(i)的f(i−1)的值是多少
+            pre = Math.max(pre + x, x);//判断f(i-1)是否要加到当前数上
+            maxAns = Math.max(maxAns, pre);//获取最大值
+        }
+        return maxAns;
+    }
+}
+
+// 贪心法
+class Solution{
+    public int maxSubAray(int[] nums){
+        //类似寻找最大最小值的题目,初始值一定要定义成理论上的最小最大值
+        int result = Integer.MIN_VALUE;
+        int numsSize = nums.length;
+        int sum = 0;
+        for (int i = 0; i < numsSize; i++){
+            sum += nums[i];
+            result = Math.max(result, sum);
+            //如果sum < 0,重新开始找子序串
+            if (sum < 0){
+                sum = 0;
+            }
+        }
+
+        return result;
+    }
+}
+
+// 分治法: 线段树
+class Solution {
+    public int maxSubAray(int[] nums) {
+        if (nums == null || nums.length <= 0)// 输入校验
+            return 0;
+        int len = nums.length;// 获取输入长度
+        return getInfo(nums, 0, len - 1).mSum;
+    }
+
+    class wtevTree { //线段树
+        int lSum;// 以左区间为端点的最大子段和
+        int rSum;// 以右区间为端点的最大子段和
+        int iSum;// 区间所有数的和
+        int mSum;// 该区间的最大子段和
+        wtevTree(int l, int r, int i, int m) { // 构造函数
+            lSum = l;
+            rSum = r;
+            iSum = i;
+            mSum = m;
+        }
+    }
+
+    // 通过既有的属性,计算上一层的属性,一步步往上返回,获得线段树
+    wtevTree pushUp(wtevTree leftT, wtevTree rightT) {
+        // 新子段的lSum等于左区间的lSum或者左区间的 区间和 加上右区间的lSum
+        int l = Math.max(leftT.lSum, leftT.iSum + rightT.lSum);
+        // 新子段的rSum等于右区间的rSum或者右区间的 区间和 加上左区间的rSum
+        int r = Math.max(leftT.rSum + rightT.iSum, rightT.rSum);
+        // 新子段的区间和等于左右区间的区间和之和
+        int i = leftT.iSum + rightT.iSum;
+        // 新子段的最大子段和,其子段有可能穿过左右区间,或左区间,或右区间
+        int m = Math.max(leftT.rSum + rightT.lSum, Math.max(leftT.mSum, rightT.mSum));
+        return new wtevTree(l, r, i, m);
+    }
+
+    // 递归建立和获得输入区间所有子段的结构
+    wtevTree getInfo(int[] nums, int left, int right) {
+        if (left == right) // 若区间长度为1,其四个子段均为其值
+            return new wtevTree(nums[left], nums[left], nums[left], nums[left]);
+        int mid = (left + right) >> 1;// 获得中间点mid,右移一位相当于除以2,运算更快
+        wtevTree leftT = getInfo(nums, left, mid);
+        wtevTree rightT = getInfo(nums, mid + 1, right);//mid+1,左右区间没有交集。
+        return pushUp(leftT, rightT);//递归结束后,做最后一次合并
+    }
+}
+```
+
+![](https://pic.leetcode-cn.com/1630829429-vjIBwS-1a3872e5-79d8-49fc-940b-0258d48b8f61.gif)

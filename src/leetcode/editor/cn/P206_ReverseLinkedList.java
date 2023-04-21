@@ -68,15 +68,11 @@ public class P206_ReverseLinkedList{
  */
 class Solution {
     public ListNode reverseList(ListNode head) {
-		ListNode preNode = null;
-		ListNode nextNode = new ListNode();
-    	while (head != null) {
-			nextNode = head.next;
-			head.next = preNode;
-			preNode = head;
-			head = nextNode;
+		while(head!=null) {
+			currentNode.next = head.next;
+			currentNode.next = head;
+			head = head.next;
 		}
-    	return preNode;
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)

@@ -1,0 +1,39 @@
+1. dp数组的含义：$dp[i]$表示序列$[1,2,3,...,i]$能够形成的所有不同BST。
+2. basecase：$i = 0$ 时为空树，$i = 1$ 时为只有一个根节点$1$的树
+3. 状态转移：为了得到$dp[i]$，我们在区间$[1,i]$枚举所有的$j$，以$j$作为BST的根节点，可以得到左边序列的所有二叉搜索树$dp[j-1]$、$j$右边序列的所有平衡二叉树$dp[i-j]$。不过这里的$dp[i-j]$是序列$[1,...i-j]$构成的BST，只要对它们做深拷贝并将每个节点值加$j$，就可以得到序列$[j+1,...i]$构成的BST，这正是我们需要的。现在我们已知$j$左边序列的BST和右边序列的BST，只需要用两个for循环，左边序列BST作为$j$的左子树，右边序列BST作为$j$的右子树，就可以得到所有节点值为$1$到$i$且以$j$作为根节点的BST，然后遍历$j+1$重复相同流程即可。
+
+* 
+
+```
+class Solution {
+public:
+    // 对tmp做深拷贝并将每个节点值加j
+    TreeNode* copy_tree(TreeNode* tmp, int j){
+        if(tmp == nullptr) return nullptr;   
+        TreeNode* left = copy_tree(tmp->left, j);
+        TreeNode* right = copy_tree(tmp->right, j);
+        TreeNode* node = new TreeNode(tmp->val + j, left, right);
+        return node;
+    }
+    vector<TreeNode*> generateTrees(int n) {
+        // dp[i]表示序列[1,2,...,i]能够形成的所有不同BST
+        vector<vector<TreeNode*>> dp(n+1);
+        dp[0] = {nullptr};
+        dp[1] = {new TreeNode(1)};
+        for(int i = 2;i <= n;i++){
+            // 在[1,i]范围枚举所有j，以j为根节点，左边序列BST成为j的左子树，右边序列BST成为j的右子树
+            for(int j = 1;j <= i;j++){
+                // 一共有dp[j-1]*dp[i-j](左序列*右序列)种组合，全部遍历
+                for(auto& tmp: dp[i-j]){
+                    TreeNode* rson = copy_tree(tmp, j); // tmp不能直接当右孩子，要整体加j并做深拷贝
+                    for(auto& lson: dp[j-1]){
+                        dp[i].push_back(new TreeNode(j, lson, rson));
+                    }
+                }
+            }
+        }
+        return dp[n];
+    }
+};
+```
+
