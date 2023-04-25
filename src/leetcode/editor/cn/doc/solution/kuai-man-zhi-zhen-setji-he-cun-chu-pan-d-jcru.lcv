@@ -1,0 +1,89 @@
+### 方法一：快慢指针
+
+想想在操场跑步，跑的快的最终会套圈跑的慢的。
+
+用快慢指针模拟类似的场景，如果快慢指针相遇，则说明有环；否则快指针指向null了，说明没有环
+
+* java
+
+```java
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        // 空节点或一个节点，则没有环
+        if (head == null || head.next == null) {
+            return false;
+        }
+        ListNode slow = head;
+        // 让快指针先跑，否则下面循环一开始，slow与fast相遇了，循环结束了
+        ListNode fast = head.next;
+        while (slow != fast) {
+            // 快指针为空或者快指针下一个节点为空，则说明没有环
+            // 判断fast.next是因为fast一次要前进两个节点，保证中间不出现null
+            if (fast == null || fast.next == null) {
+                return false;
+            }
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return true;
+    }
+}
+```
+
+**时间复杂度：** O(n)
+
+    假设链表是个环，有n个节点，slow从第1个节点开始走到第n个节点，共走过n-1个节点，
+
+    而这时fast从第2个节点开始，每次走两个节点，共走过了2*(n-1)个节点，最终到达第n个节点与slow相遇，
+
+    因此从第一个节点算起，遍历n个节点，slow与fast相遇结束，因此至多遍历迭代n次，因此时间复杂度为O(n)
+
+**空间复杂度：** O(1)
+
+### 方法二：用Set集合存储判断
+
+* java
+
+```java
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        Set<ListNode> set = new HashSet<>();
+        while (head != null) {
+            // set.add(e)，增加的元素e在set集合中不存在，则返回true；否则返回false
+            if (!set.add(head)) {
+                return true;
+            }
+            head = head.next;
+        }
+        return false;
+    }
+}
+
+```
+
+**时间复杂度：** O(n)，n代表链表的节点数，链表中无环时，需要遍历链表中每个节点，即需遍历n个节点。
+
+**空间复杂度：** O(n)，链表中无环时，需要存储链表的每个节点，因此需要n个空间大小存储。
+

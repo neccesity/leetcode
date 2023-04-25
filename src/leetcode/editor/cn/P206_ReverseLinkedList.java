@@ -1,51 +1,46 @@
-//给你单链表的头节点 <code>head</code> ，请你反转链表，并返回反转后的链表。
+//<p>Given the <code>head</code> of a singly linked list, reverse the list, and return <em>the reversed list</em>.</p>
 //
-//<div class="original__bRMd"> 
-// <div> 
-//  <p>&nbsp;</p> 
-// </div>
-//</div>
-//
-//<p><strong>示例 1：</strong></p> 
+//<p>&nbsp;</p> 
+//<p><strong class="example">Example 1:</strong></p> 
 //<img alt="" src="https://assets.leetcode.com/uploads/2021/02/19/rev1ex1.jpg" style="width: 542px; height: 222px;" /> 
 //<pre>
-//<strong>输入：</strong>head = [1,2,3,4,5]
-//<strong>输出：</strong>[5,4,3,2,1]
+//<strong>Input:</strong> head = [1,2,3,4,5]
+//<strong>Output:</strong> [5,4,3,2,1]
 //</pre>
 //
-//<p><strong>示例 2：</strong></p> 
+//<p><strong class="example">Example 2:</strong></p> 
 //<img alt="" src="https://assets.leetcode.com/uploads/2021/02/19/rev1ex2.jpg" style="width: 182px; height: 222px;" /> 
 //<pre>
-//<strong>输入：</strong>head = [1,2]
-//<strong>输出：</strong>[2,1]
+//<strong>Input:</strong> head = [1,2]
+//<strong>Output:</strong> [2,1]
 //</pre>
 //
-//<p><strong>示例 3：</strong></p>
+//<p><strong class="example">Example 3:</strong></p>
 //
 //<pre>
-//<strong>输入：</strong>head = []
-//<strong>输出：</strong>[]
+//<strong>Input:</strong> head = []
+//<strong>Output:</strong> []
 //</pre>
 //
-//<p>&nbsp;</p>
-//
-//<p><strong>提示：</strong></p>
+//<p>&nbsp;</p> 
+//<p><strong>Constraints:</strong></p>
 //
 //<ul> 
-// <li>链表中节点的数目范围是 <code>[0, 5000]</code></li> 
+// <li>The number of nodes in the list is the range <code>[0, 5000]</code>.</li> 
 // <li><code>-5000 &lt;= Node.val &lt;= 5000</code></li> 
 //</ul>
 //
-//<p>&nbsp;</p>
+//<p>&nbsp;</p> 
+//<p><strong>Follow up:</strong> A linked list can be reversed either iteratively or recursively. Could you implement both?</p>
 //
-//<p><strong>进阶：</strong>链表可以选用迭代或递归方式完成反转。你能否用两种方法解决这道题？</p>
-//
-//<div><div>Related Topics</div><div><li>递归</li><li>链表</li></div></div><br><div><li>👍 2869</li><li>👎 0</li></div>
+//<div><div>Related Topics</div><div><li>递归</li><li>链表</li></div></div><br><div><li>👍 3116</li><li>👎 0</li></div>
 
 package leetcode.editor.cn;
 
+import java.util.List;
+
 /**
- * 反转链表
+ * Reverse Linked List
  * @author zhangjunhui1999
  */
 public class P206_ReverseLinkedList{
@@ -68,11 +63,17 @@ public class P206_ReverseLinkedList{
  */
 class Solution {
     public ListNode reverseList(ListNode head) {
-		while(head!=null) {
-			currentNode.next = head.next;
-			currentNode.next = head;
-			head = head.next;
+		ListNode currentNode = head;
+		ListNode nextNode = new ListNode();
+		ListNode preNode = null;
+		while(currentNode!=null) {
+			nextNode=currentNode.next;
+			currentNode.next=preNode;
+			preNode=currentNode;
+			currentNode=nextNode;
 		}
+		head=preNode;
+    	return head;
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
